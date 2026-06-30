@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-hot-toast';
-import { fetchAllCourses, enrollInCourse } from '../../features/courses/courseThunk';
+import { fetchAllCourses, enrollInCourse, fetchEnrolledCourses } from '../../features/courses/courseThunk';
 import { 
   Star, 
   Users, 
@@ -25,7 +25,7 @@ const BuyCourses = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const { courses, loading, error } = useSelector((state) => state.courses);
+  const { courses, loading, error, enrolledCourses } = useSelector((state) => state.courses);
   const { user } = useSelector((state) => state.auth);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [showPayment, setShowPayment] = useState(false);
@@ -465,7 +465,7 @@ const BuyCourses = () => {
                 className={`btn-primary w-full py-3.5 text-md flex items-center justify-center gap-3 ${
                   isProcessing ? 'opacity-70 cursor-not-allowed' : ''
                 }`}
-                onClick={handleRazorpayPayment}
+                onClick={handleEnrollment}
                 disabled={isProcessing}
               >
                 {isProcessing ? (

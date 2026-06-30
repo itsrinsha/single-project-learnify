@@ -189,7 +189,7 @@ const InstructorLiveClasses = () => {
         </div>
         <button 
           onClick={() => setShowScheduleForm(true)}
-          className="px-8 py-4 bg-blue-600 text-white rounded-2xl font-bold text-sm shadow-xl shadow-blue-100 hover:bg-blue-700 transition-all flex items-center gap-3 active:scale-95"
+          className="px-8 py-4 bg-primary-600 text-white rounded-2xl font-bold text-sm shadow-xl shadow-primary-100 hover:bg-primary-700 transition-all flex items-center gap-3 active:scale-95"
         >
           <Plus size={20} />
           Schedule Live Class
@@ -202,7 +202,7 @@ const InstructorLiveClasses = () => {
           onClick={() => setActiveTab('upcoming')}
           className={`px-6 py-3 rounded-xl font-bold text-sm transition-all ${
             activeTab === 'upcoming' 
-              ? 'bg-blue-600 text-white shadow-lg shadow-blue-100' 
+              ? 'bg-primary-600 text-white shadow-lg shadow-primary-100' 
               : 'text-slate-500 hover:bg-slate-100'
           }`}
         >
@@ -212,7 +212,7 @@ const InstructorLiveClasses = () => {
           onClick={() => setActiveTab('completed')}
           className={`px-6 py-3 rounded-xl font-bold text-sm transition-all ${
             activeTab === 'completed' 
-              ? 'bg-blue-600 text-white shadow-lg shadow-blue-100' 
+              ? 'bg-primary-600 text-white shadow-lg shadow-primary-100' 
               : 'text-slate-500 hover:bg-slate-100'
           }`}
         >
@@ -228,7 +228,7 @@ const InstructorLiveClasses = () => {
             placeholder="Search classes..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-xs font-bold outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+            className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-xs font-bold outline-none focus:ring-2 focus:ring-primary-500 transition-all"
           />
         </div>
       </div>
@@ -236,7 +236,7 @@ const InstructorLiveClasses = () => {
       {/* Class List */}
       {loading ? (
         <div className="flex flex-col items-center justify-center py-20 gap-4">
-          <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
+          <Loader2 className="w-10 h-10 text-primary-600 animate-spin" />
           <p className="text-slate-500 font-medium">Loading sessions...</p>
         </div>
       ) : filteredSessions.length === 0 ? (
@@ -247,7 +247,7 @@ const InstructorLiveClasses = () => {
       ) : (
         <div className="grid gap-6">
           {filteredSessions.map((session) => (
-            <div key={session._id} className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:border-blue-300 transition-all group">
+            <div key={session._id} className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:border-primary-300 transition-all group">
               <div className="p-6 md:p-8 flex flex-col md:flex-row items-center gap-6">
                 <div className={`w-20 h-20 rounded-2xl flex flex-col items-center justify-center border-2 ${
                   session.isLive ? 'bg-red-50 border-red-100 text-red-600' : 'bg-slate-50 border-slate-100 text-slate-400'
@@ -261,7 +261,7 @@ const InstructorLiveClasses = () => {
                 <div className="flex-1 space-y-3 text-center md:text-left">
                   <div className="flex flex-wrap justify-center md:justify-start items-center gap-3">
                     <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${
-                      session.isLive ? 'bg-red-600 text-white animate-pulse' : 'bg-blue-600 text-white'
+                      session.isLive ? 'bg-red-600 text-white animate-pulse' : 'bg-primary-600 text-white'
                     }`}>
                       {session.isLive ? 'Live Now' : 'Upcoming'}
                     </span>
@@ -273,7 +273,7 @@ const InstructorLiveClasses = () => {
                   <div className="flex flex-wrap justify-center md:justify-start items-center gap-4 text-sm font-medium text-slate-500">
                     <span className="flex items-center gap-1.5"><Clock size={16} /> {new Date(session.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                     {session.meetingLink && (
-                      <a href={session.meetingLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-blue-600 hover:underline font-bold">
+                      <a href={session.meetingLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-primary-600 hover:underline font-bold">
                         <ExternalLink size={16} /> Link: {session.meetingLink}
                       </a>
                     )}
@@ -302,7 +302,7 @@ const InstructorLiveClasses = () => {
                     !session.isCompleted && new Date(session.startTime) >= new Date(Date.now() - 24 * 60 * 60 * 1000) && (
                       <button 
                         onClick={() => handleStartSession(session._id)}
-                        className="px-6 py-4 bg-blue-600 text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-blue-100 hover:bg-blue-700 active:scale-95"
+                        className="px-6 py-4 bg-primary-600 text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-primary-100 hover:bg-primary-700 active:scale-95"
                       >
                         Start Live Stream
                       </button>
@@ -336,7 +336,7 @@ const InstructorLiveClasses = () => {
                   placeholder="e.g. Advanced State Management Workshop" 
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-xl text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all" 
+                  className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-xl text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-primary-500 transition-all" 
                 />
               </div>
               <div className="grid md:grid-cols-2 gap-6">
@@ -345,7 +345,7 @@ const InstructorLiveClasses = () => {
                   <select 
                     value={courseId}
                     onChange={(e) => setCourseId(e.target.value)}
-                    className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-xl text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all cursor-pointer"
+                    className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-xl text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-primary-500 transition-all cursor-pointer"
                   >
                     {courses.map(course => (
                       <option key={course._id} value={course._id}>{course.title}</option>
@@ -355,7 +355,7 @@ const InstructorLiveClasses = () => {
                 </div>
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Audience</label>
-                  <select className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-xl text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all cursor-pointer">
+                  <select className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-xl text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-primary-500 transition-all cursor-pointer">
                     <option>All Enrolled Students</option>
                   </select>
                 </div>
@@ -366,7 +366,7 @@ const InstructorLiveClasses = () => {
                     value={scheduledDate}
                     onChange={(e) => setScheduledDate(e.target.value)}
                     onClick={(e) => e.target.showPicker()}
-                    className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-xl text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all cursor-pointer" 
+                    className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-xl text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-primary-500 transition-all cursor-pointer" 
                   />
                 </div>
                 <div className="space-y-2">
@@ -376,7 +376,7 @@ const InstructorLiveClasses = () => {
                     value={scheduledTime}
                     onChange={(e) => setScheduledTime(e.target.value)}
                     onClick={(e) => e.target.showPicker()}
-                    className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-xl text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all cursor-pointer" 
+                    className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-xl text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-primary-500 transition-all cursor-pointer" 
                   />
                 </div>
               </div>
@@ -387,14 +387,14 @@ const InstructorLiveClasses = () => {
                   placeholder="https://meet.google.com/..." 
                   value={meetingLink}
                   onChange={(e) => setMeetingLink(e.target.value)}
-                  className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-xl text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all" 
+                  className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-xl text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-primary-500 transition-all" 
                 />
               </div>
               <div className="pt-4">
                 <button 
                   type="submit"
                   disabled={submitting}
-                  className="w-full py-4 bg-blue-600 text-white rounded-2xl font-black text-sm hover:bg-blue-700 transition-all shadow-xl shadow-blue-100 active:scale-95 disabled:bg-blue-400 disabled:cursor-not-allowed"
+                  className="w-full py-4 bg-primary-600 text-white rounded-2xl font-black text-sm hover:bg-primary-700 transition-all shadow-xl shadow-primary-100 active:scale-95 disabled:bg-primary-400 disabled:cursor-not-allowed"
                 >
                   {submitting ? 'Scheduling...' : 'Schedule Live Class'}
                 </button>

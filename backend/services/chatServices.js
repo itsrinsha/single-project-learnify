@@ -114,6 +114,8 @@ export const getConversationsService = async (userId) => {
   const contacts = new Map();
 
  userMessages.forEach((msg) => {
+  // Check if sender or receiver was deleted from the database
+  if (!msg.sender || !msg.receiver) return;
 
   const otherUser =
     msg.sender._id.toString() === userId.toString()
