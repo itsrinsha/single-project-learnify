@@ -5,7 +5,8 @@ import {
   MessageSquare,
   Loader2,
   User,
-  Phone
+  Phone,
+  ArrowLeft
 } from 'lucide-react';
 import chatService from '../../services/chatService';
 import { toast } from 'react-hot-toast';
@@ -461,7 +462,7 @@ const InstructorMessages = () => {
     <div className="h-full flex flex-col lg:flex-row bg-white overflow-hidden">
 
       {/* Sidebar */}
-      <aside className="w-full lg:w-96 border-r border-slate-100 flex flex-col overflow-hidden">
+      <aside className={`w-full lg:w-96 border-r border-slate-100 flex flex-col overflow-hidden ${selectedChat ? 'hidden lg:flex' : 'flex'}`}>
 
         <div className="p-6 border-b border-slate-100 flex items-center justify-between">
 
@@ -576,7 +577,7 @@ const InstructorMessages = () => {
       </aside>
 
       {/* Chat Area */}
-      <main className="flex-1 flex flex-col overflow-hidden bg-white">
+      <main className={`flex-1 flex flex-col overflow-hidden bg-white ${!selectedChat ? 'hidden lg:flex' : 'flex'}`}>
 
         {
           selectedChat ? (
@@ -586,6 +587,14 @@ const InstructorMessages = () => {
               <header className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/30">
 
               <div className="flex items-center gap-4">
+
+                  {/* Back Button for Mobile */}
+                  <button 
+                    onClick={() => setSelectedChat(null)}
+                    className="lg:hidden p-2 -ml-3 text-slate-500 hover:bg-slate-100 rounded-xl transition-colors"
+                  >
+                    <ArrowLeft size={20} />
+                  </button>
 
                   <img
                     src={
@@ -679,7 +688,7 @@ const InstructorMessages = () => {
                           }`}
                         >
 
-                          <div className={`max-w-[75%] space-y-1 ${
+                          <div className={`flex flex-col max-w-[75%] space-y-1 ${
                             isOwn
                               ? 'items-end'
                               : 'items-start'

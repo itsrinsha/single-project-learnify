@@ -11,7 +11,8 @@ import {
   Image as ImageIcon,
   Loader2,
   User,
-  Phone
+  Phone,
+  ArrowLeft
 } from 'lucide-react';
 import chatService from '../../services/chatService';
 import { toast } from 'react-hot-toast';
@@ -367,7 +368,7 @@ const InstructorMessages = () => {
     <div className="h-full flex flex-col md:flex-row bg-white overflow-hidden">
 
       {/* ── Sidebar ── */}
-      <div className="w-full md:w-80 border-r border-slate-100 flex flex-col flex-shrink-0">
+      <div className={`w-full md:w-80 border-r border-slate-100 flex flex-col flex-shrink-0 ${selectedChat ? 'hidden md:flex' : 'flex'}`}>
 
         {/* Sidebar Header */}
         <div className="p-5 flex items-center justify-between border-b border-slate-100">
@@ -429,11 +430,19 @@ const InstructorMessages = () => {
       </div>
 
       {/* ── Main Chat Window ── */}
-      <div className="flex-1 flex flex-col min-w-0 bg-slate-50/30">
+      <div className={`flex-1 flex flex-col min-w-0 bg-slate-50/30 ${!selectedChat ? 'hidden md:flex' : 'flex'}`}>
         {selectedChat ? (
           <>
             {/* ── Chat Header ── */}
             <div className="px-5 py-4 bg-white border-b border-slate-100 flex items-center gap-3">
+              {/* Back Button for Mobile */}
+              <button 
+                onClick={() => setSelectedChat(null)}
+                className="md:hidden p-2 -ml-2 text-slate-500 hover:bg-slate-50 rounded-xl transition-colors"
+              >
+                <ArrowLeft size={20} />
+              </button>
+
               {/* Avatar */}
               <div className="relative flex-shrink-0">
                 <img
@@ -475,7 +484,7 @@ const InstructorMessages = () => {
                 const isOwn = msg.sender === currentUserId || msg.sender?._id === currentUserId;
                 return (
                   <div key={msg._id} className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-md space-y-1 ${isOwn ? 'items-end' : 'items-start'}`}>
+                    <div className={`flex flex-col max-w-md space-y-1 ${isOwn ? 'items-end' : 'items-start'}`}>
                       <div className={`px-5 py-3.5 rounded-[1.5rem] text-sm font-medium shadow-sm ${
                         isOwn
                           ? 'bg-slate-900 text-white rounded-tr-none'

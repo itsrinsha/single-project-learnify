@@ -20,6 +20,7 @@ import {
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAllCourses } from '../../features/courses/courseThunk';
+import { logout } from '../../features/auth/authSlice';
 import heroImage from '../../assets/hero.png';
 
 const LandingPage = () => {
@@ -117,7 +118,14 @@ const LandingPage = () => {
             {['Courses', 'About', 'Teach'].map((item) => (
               <a 
                 key={item}
-                href={item === 'Teach' ? '/instructor/login' : `#${item.toLowerCase()}`} 
+                href={item === 'Teach' ? '/instructor/login' : `#${item.toLowerCase()}`}
+                onClick={(e) => {
+                  if (item === 'Teach') {
+                    e.preventDefault();
+                    dispatch(logout());
+                    navigate('/instructor/login');
+                  }
+                }}
                 className="text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors"
               >
                 {item}
@@ -129,7 +137,7 @@ const LandingPage = () => {
             {!currentUser ? (
               <>
                 <button 
-                  onClick={() => navigate('/login')}
+                  onClick={() => { dispatch(logout()); navigate('/login'); }}
                   className="text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors px-4 py-2"
                 >
                   Login
@@ -143,7 +151,7 @@ const LandingPage = () => {
               </>
            ) : (
               <button 
-                onClick={() => navigate('/login')}
+                onClick={() => { dispatch(logout()); navigate('/login'); }}
                 className="btn-primary py-2 px-5 text-xs rounded-xl"
               >
                 Start Learning
@@ -174,7 +182,15 @@ const LandingPage = () => {
                   <a 
                     key={item}
                     href={item === 'Teach' ? '/instructor/login' : `#${item.toLowerCase()}`}
-                    onClick={() => setIsMenuOpen(false)} 
+                    onClick={(e) => {
+                      if (item === 'Teach') {
+                        e.preventDefault();
+                        dispatch(logout());
+                        navigate('/instructor/login');
+                      } else {
+                        setIsMenuOpen(false);
+                      }
+                    }} 
                     className="text-sm font-semibold text-slate-700 hover:text-primary-600 transition-colors"
                   >
                     {item}
@@ -183,11 +199,11 @@ const LandingPage = () => {
                 <div className="pt-4 border-t border-slate-100 flex flex-col gap-3">
                   {!currentUser ? (
                     <>
-                      <button onClick={() => navigate('/login')} className="w-full py-2.5 text-sm font-bold text-slate-700 bg-slate-50 rounded-xl hover:bg-slate-100">Login</button>
-                      <button onClick={() => navigate('/register')} className="w-full bg-primary-600 text-white py-2.5 text-sm font-bold rounded-xl shadow-sm hover:bg-primary-700">Join Now</button>
+                      <button onClick={() => { dispatch(logout()); navigate('/login'); setIsMenuOpen(false); }} className="w-full py-2.5 text-sm font-bold text-slate-700 bg-slate-50 rounded-xl hover:bg-slate-100">Login</button>
+                      <button onClick={() => { navigate('/register'); setIsMenuOpen(false); }} className="w-full bg-primary-600 text-white py-2.5 text-sm font-bold rounded-xl shadow-sm hover:bg-primary-700">Join Now</button>
                     </>
                   ) : (
-                    <button onClick={() => navigate('/login')} className="w-full bg-primary-600 text-white py-2.5 text-sm font-bold rounded-xl shadow-sm hover:bg-primary-700">Start Learning</button>
+                    <button onClick={() => { dispatch(logout()); navigate('/login'); setIsMenuOpen(false); }} className="w-full bg-primary-600 text-white py-2.5 text-sm font-bold rounded-xl shadow-sm hover:bg-primary-700">Start Learning</button>
                   )}
                 </div>
               </div>
@@ -221,7 +237,7 @@ const LandingPage = () => {
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-2">
                 <button
-                  onClick={() => navigate('/register')}
+                  onClick={() => { dispatch(logout()); navigate('/login'); }}
                   className="btn-primary px-8 py-4 text-xs font-black uppercase tracking-wider rounded-xl shadow-lg shadow-primary-600/10"
                 >
                   Start Learning
@@ -405,13 +421,13 @@ const LandingPage = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
             <button 
-              onClick={() => navigate('/register')}
+              onClick={() => { dispatch(logout()); navigate('/login'); }}
               className="btn-primary px-8 py-3.5 text-xs font-black uppercase tracking-wider rounded-xl shadow-lg shadow-primary-600/10 w-full sm:w-auto"
             >
               Start Learning Now
             </button>
             <button 
-              onClick={() => navigate('/instructor/login')} 
+              onClick={() => { dispatch(logout()); navigate('/instructor/login'); }} 
               className="btn-secondary px-8 py-3.5 text-xs font-black uppercase tracking-wider rounded-xl bg-transparent text-white border-slate-800 hover:bg-slate-900 w-full sm:w-auto"
             >
               Become an Instructor
@@ -439,7 +455,7 @@ const LandingPage = () => {
                 <ul className="space-y-4 text-xs font-semibold text-slate-600">
                   <li><a href="#courses" className="hover:text-primary-600 transition-colors">Browse Courses</a></li>
                   <li><a href="#about" className="hover:text-primary-600 transition-colors">About Platform</a></li>
-                  <li><a href="/instructor/login" className="hover:text-primary-600 transition-colors">Instructor Portal</a></li>
+                  <li><a href="/instructor/login" onClick={(e) => { e.preventDefault(); dispatch(logout()); navigate('/instructor/login'); }} className="hover:text-primary-600 transition-colors">Instructor Portal</a></li>
                 </ul>
               </div>
             ))}

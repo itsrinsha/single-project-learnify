@@ -10,14 +10,25 @@ import {
   persistReducer,
 } from "redux-persist";
 
-import storage from 'redux-persist/lib/storage';
-const realStorage = storage.default;
 import instructorReducer from "../features/instructor/instructorSlice";
+
+// Custom storage adapter for Vite compatibility
+const customStorage = {
+  getItem: (key) => Promise.resolve(window.localStorage.getItem(key)),
+  setItem: (key, item) => {
+    window.localStorage.setItem(key, item);
+    return Promise.resolve();
+  },
+  removeItem: (key) => {
+    window.localStorage.removeItem(key);
+    return Promise.resolve();
+  },
+};
 
 // 🔹 persist config
 const persistConfig = {
   key: "auth",
-  storage: realStorage,
+  storage: customStorage,
   whitelist: ["user", "isAuthenticated"],
 };
 // console.log("storage", storage)

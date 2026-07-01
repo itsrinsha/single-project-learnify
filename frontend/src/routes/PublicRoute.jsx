@@ -12,9 +12,13 @@ const PublicRoute = ({ children }) => {
       return children;
     }
 
-    if (user?.role === 'admin') return <Navigate to="/admin/dashboard" replace />;
-    if (user?.role === 'instructor') return <Navigate to="/instructor/dashboard" replace />;
-    return <Navigate to="/student/dashboard" replace />;
+    const from = location.state?.from?.pathname || (
+      user?.role === 'admin' ? '/admin/dashboard' :
+      user?.role === 'instructor' ? '/instructor/dashboard' :
+      '/student/dashboard'
+    );
+    
+    return <Navigate to={from} replace />;
   }
 
   return children;

@@ -21,12 +21,15 @@ export const sendMessage = asyncHandler(async (req, res) => {
 
   // 🔔 Notify receiver about the new message
   const sender = await User.findById(req.user.id).select('name');
+  const receiverUser = await User.findById(receiver).select('role');
+  const link = receiverUser?.role === 'instructor' ? '/instructor/messages' : '/student/messages';
+
   createNotification({
     recipient: receiver,
     type: 'new_message',
     title: '💬 New Message',
     message: `${sender?.name || 'Someone'} sent you a message: "${message.length > 60 ? message.slice(0, 60) + '…' : message}"`,
-    link: '/student/messages',
+    link,
   });
 
   res.status(201).json(newMessage);

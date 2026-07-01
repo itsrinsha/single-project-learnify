@@ -1,4 +1,5 @@
 import Message from "../models/message.js";
+import User from "../models/User.js";
 import { getReceiverSocketId, getIo } from "../sockets/chatSocket.js";
 
 // send message
@@ -107,9 +108,11 @@ export const markAsReadService = async ({ currentUserId, userId }) => {
 
 // get conversations list (contacts)
 export const getConversationsService = async (userId) => {
+  const currentUser = await User.findById(userId).select("role");
+  
   const userMessages = await Message.find({
     $or: [{ sender: userId }, { receiver: userId }],
-  }).populate("sender receiver", "name email profileImage");
+  }).populate("sender receiver", "name email profileImage role");
 
   const contacts = new Map();
 
@@ -121,6 +124,12 @@ export const getConversationsService = async (userId) => {
     msg.sender._id.toString() === userId.toString()
       ? msg.receiver
       : msg.sender;
+
+  // Role-based filtering:
+  // - Students can only see instructors
+  // - Instructors can only see students
+  if (currentUser?.role === "student" && otherUser.role !== "instructor") return;
+  if (currentUser?.role === "instructor" && otherUser.role !== "student") return;
 
   const isUnread =
     msg.receiver._id.toString() === userId.toString() &&
