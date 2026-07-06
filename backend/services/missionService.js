@@ -1,14 +1,75 @@
 import Mission from "../models/Mission.js";
 import MissionSubmission from "../models/MissionSubmission.js";
+import Enrollment from "../models/Enrollment.js";
+import Course from "../models/Course.js";
 import { checkAndCreatePendingCertificate } from "./certificateService.js";
-
+import { sendEmail } from "../utils/sendEmail.js";
 // Create a new mission
 export const createMissionService = async (instructorId, missionData) => {
   const mission = new Mission({
     ...missionData,
     instructor: instructorId,
   });
-  return await mission.save();
+  const savedMission = await mission.save();
+
+  // Notify enrolled students via email asynchronously
+  (async () => {
+    try {
+      const enrollments = await Enrollment.find({ course: missionData.course }).populate("user", "name email");
+      const course = await Course.findById(missionData.course).select("title");
+      const courseTitle = course?.title || "your enrolled course";
+      
+      const formattedDeadline = new Date(missionData.deadline).toLocaleDateString("en-US", {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+
+      for (const enrollment of enrollments) {
+        if (enrollment.user && enrollment.user.email) {
+          const studentEmail = enrollment.user.email;
+          const studentName = enrollment.user.name || "Student";
+          
+          const mailSubject = `New Task Assigned: ${missionData.title}`;
+          const mailHtml = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff;">
+              <div style="background-color: #f59e0b; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; color: #ffffff;">
+                <h1 style="margin: 0; font-size: 24px;">New Task Assigned</h1>
+              </div>
+              <div style="padding: 24px; color: #334155; line-height: 1.6;">
+                <p>Hello <strong>${studentName}</strong>,</p>
+                <p>A new task has been assigned in your course: <strong>${courseTitle}</strong>.</p>
+                
+                <div style="background-color: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 16px; margin: 20px 0;">
+                  <h3 style="margin-top: 0; color: #92400e; border-bottom: 1px solid #fde68a; padding-bottom: 8px;">Task Details</h3>
+                  <p style="margin: 8px 0;"><strong>Title:</strong> ${missionData.title}</p>
+                  <p style="margin: 8px 0;"><strong>Deadline:</strong> ${formattedDeadline}</p>
+                  <p style="margin: 8px 0;"><strong>Pass Marks:</strong> ${missionData.passMarks} / ${missionData.totalMarks}</p>
+                </div>
+                
+                <p>Log in to your dashboard to review the task description and submit your work before the deadline.</p>
+                
+                <div style="text-align: center; margin: 30px 0;">
+                  <a href="${process.env.FRONTEND_URL || 'http://localhost:5173'}" target="_blank" style="background-color: #f59e0b; color: #ffffff; padding: 12px 24px; text-decoration: none; font-weight: bold; border-radius: 6px; display: inline-block;">View Task</a>
+                </div>
+                
+                <p style="font-size: 12px; color: #64748b; margin-top: 40px; border-top: 1px solid #e2e8f0; padding-top: 16px;">
+                  This is an automated notification from Learnify. Please do not reply directly to this email.
+                </p>
+              </div>
+            </div>
+          `;
+          
+          await sendEmail(studentEmail, mailSubject, mailHtml);
+        }
+      }
+    } catch (notifyErr) {
+      console.error("[Email Notification] Error sending mission creation emails:", notifyErr);
+    }
+  })();
+
+  return savedMission;
 };
 
 // Get missions for a course, optionally including the user's submission details

@@ -1,6 +1,7 @@
 import Message from "../models/message.js";
 import User from "../models/User.js";
 import { getReceiverSocketId, getIo } from "../sockets/chatSocket.js";
+import { sendEmail } from "../utils/sendEmail.js";
 
 // send message
 export const sendMessageService = async ({ sender, receiver, message }) => {
@@ -16,6 +17,46 @@ export const sendMessageService = async ({ sender, receiver, message }) => {
     if (receiverSocketId) {
       const io = getIo();
       io.to(receiverSocketId).emit("new-message", newMessage);
+    } else {
+      // Receiver is offline, send email notification
+      (async () => {
+        try {
+          const receiverUser = await User.findById(receiver);
+          const senderUser = await User.findById(sender);
+          if (receiverUser && receiverUser.email && senderUser) {
+            const senderName = senderUser.name || "A user";
+            const mailSubject = `New Message from ${senderName}`;
+            const mailHtml = `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff;">
+                <div style="background-color: #2563eb; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; color: #ffffff;">
+                  <h1 style="margin: 0; font-size: 24px;">You have a new message!</h1>
+                </div>
+                <div style="padding: 24px; color: #334155; line-height: 1.6;">
+                  <p>Hello <strong>${receiverUser.name}</strong>,</p>
+                  <p><strong>${senderName}</strong> has sent you a message on Learnify.</p>
+                  
+                  <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 20px 0; font-style: italic; color: #475569;">
+                    "${message.length > 100 ? message.substring(0, 100) + '...' : message}"
+                  </div>
+                  
+                  <p>Log in to your dashboard to view the full conversation and reply.</p>
+                  
+                  <div style="text-align: center; margin: 30px 0;">
+                    <a href="${process.env.FRONTEND_URL || 'http://localhost:5173'}" target="_blank" style="background-color: #2563eb; color: #ffffff; padding: 12px 24px; text-decoration: none; font-weight: bold; border-radius: 6px; display: inline-block;">Reply Now</a>
+                  </div>
+                  
+                  <p style="font-size: 12px; color: #64748b; margin-top: 40px; border-top: 1px solid #e2e8f0; padding-top: 16px;">
+                    This is an automated notification from Learnify. Please do not reply directly to this email.
+                  </p>
+                </div>
+              </div>
+            `;
+            await sendEmail(receiverUser.email, mailSubject, mailHtml);
+          }
+        } catch (mailErr) {
+          console.error("[Email Notification] Failed to send chat email:", mailErr);
+        }
+      })();
     }
   } catch (err) {
     console.error("[Socket] Failed to emit new-message:", err);
